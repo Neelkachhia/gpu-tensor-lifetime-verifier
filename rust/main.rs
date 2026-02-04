@@ -1,3 +1,6 @@
+mod tensor;
+use tensor::Tensor;
+
 extern "C"
 {
   fn cuda_alloc_and_free();
@@ -5,9 +8,7 @@ extern "C"
 
 fn main()
 {
-  unsafe
-  {
-    cuda_alloc_and_free();
-  }
-  println!("Rust successfully called CUDA!");
+ let t = Tensor::<f32>::new(128);
+ println!("Allocated tensor of length {}", t.len());
 }
+

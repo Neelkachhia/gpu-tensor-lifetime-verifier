@@ -3,16 +3,17 @@
 
 extern "C"
 {
-  void cuda_alloc_and_free()
+  void* cuda_alloc(size_t bytes)
   {
-    float *d_data = nullptr;
-    cudaError_t err = cudaMalloc(&d_data, 10 * sizeof(float));
-    if(err != cudaSuccess)
-    {
-      printf("cudaMalloc failed\n");
-      return;
-    }
-    cudaFree(d_data);
-    printf("CUDA allocation + free successful\n");
+    void* ptr = nullptr;
+    if(cudaMalloc(&ptr, bytes) != cudaSuccess)
+      return nullptr;
+    return ptr;
+  }
+
+  void cuda_free(void* ptr)
+  {
+    if(ptr)
+      cudaFree(ptr);
   }
 }
