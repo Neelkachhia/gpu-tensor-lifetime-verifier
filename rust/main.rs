@@ -1,10 +1,12 @@
 mod tensor;
 use tensor::Tensor;
 
-fn main()
-{
- let mut t = Tensor::<f32>::new(128);
- t.record_use();
- println!("Tensor recorded GPU use");
-}
+fn main() {
+    let mut t = Tensor::<f32>::new(1_000_000);
+    t.add_one();
 
+    // Proper synchronization
+    std::thread::sleep(std::time::Duration::from_millis(50));
+
+    println!("Tensor safely dropped after GPU work");
+}

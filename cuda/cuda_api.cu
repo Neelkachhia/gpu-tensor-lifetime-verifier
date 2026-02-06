@@ -3,6 +3,21 @@
 
 extern "C"
 {
+  __global__ void add_one_kernel(float* data, int n) 
+  {
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < n)
+      data[idx] += 1.0f;
+  }
+    
+  void launch_add_one(float* data, int n) 
+  {
+    int threads = 256;
+    int blocks = (n + threads - 1) / threads;
+
+    add_one_kernel<<<blocks, threads>>>(data, n);
+  }
+
   void* cuda_alloc(size_t bytes)
   {
     void* ptr = nullptr;
@@ -16,7 +31,7 @@ extern "C"
     if (ptr) 
       cudaFree(ptr);
   }
-    
+
   typedef struct
    {
      cudaEvent_t event;
@@ -46,5 +61,6 @@ extern "C"
      free(e);
    }
  }
+    
 
     

@@ -4,6 +4,11 @@ use std::ffi::c_void;
 
 extern "C"
 {
+  fn launch_add_one(data: *mut f32, n: i32);
+}
+
+extern "C"
+{
   fn cuda_alloc(bytes: usize) -> *mut c_void;
   fn cuda_free(ptr: *mut c_void);
 }
@@ -82,6 +87,21 @@ impl<T> Tensor<T>
     }
   }
 }
+
+impl Tensor<f32>
+{
+  pub fn add_one(&mut self)
+  {
+    unsafe
+    {
+      launch_add_one(self.ptr.as_ptr(), self.len as i32);
+    }
+
+    // VERY IMPORTANT: record GPU usage
+    self.record_use();
+  }
+}
+
 
 impl <T> Drop for Tensor<T>
 {
